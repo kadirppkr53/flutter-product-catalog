@@ -68,16 +68,17 @@ class Data {
   String? description;
   Specs? specs;
 
-  Data(
-      {this.id,
-      this.make,
-      this.model,
-      this.year,
-      this.price,
-      this.currency,
-      this.image,
-      this.description,
-      this.specs});
+  Data({
+    this.id,
+    this.make,
+    this.model,
+    this.year,
+    this.price,
+    this.currency,
+    this.image,
+    this.description,
+    this.specs,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -117,14 +118,15 @@ class Specs {
   String? horsepower;
   String? towing;
 
-  Specs(
-      {this.engine,
-      this.transmission,
-      this.fuelType,
-      this.mileage,
-      this.s060mph,
-      this.horsepower,
-      this.towing});
+  Specs({
+    this.engine,
+    this.transmission,
+    this.fuelType,
+    this.mileage,
+    this.s060mph,
+    this.horsepower,
+    this.towing,
+  });
 
   Specs.fromJson(Map<String, dynamic> json) {
     engine = json['engine'];

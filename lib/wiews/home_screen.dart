@@ -1,8 +1,11 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/components/products_card.dart';
 import 'package:flutter_application_1/models/product_model.dart';
 import 'package:flutter_application_1/services/api_service.dart';
+import 'package:flutter_application_1/wiews/card_screen.dart';
+import 'package:flutter_application_1/wiews/favorites_screen.dart';
+import 'package:flutter_application_1/wiews/product_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,12 +19,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   String erroMessage = "";
   List<Data> allProducts = [];
+  List<Data> favoriteList = [];
   ApiService apiService = ApiService();
+  final Set<int> cardIds = {};
 
   @override
   void initState() {
     loadProducts();
-
     super.initState();
   }
 
@@ -47,21 +51,36 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void toggleFavorite(Data product) {
+    setState(() {
+      if (favoriteList.contains(product)) {
+        favoriteList.remove(product);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${product.make} Removed from favorites!")),
+        );
+      } else {
+        favoriteList.add(product);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("${product.make} Added to favorites!")),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(219, 69, 97, 148),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Discover",
                     style: TextStyle(
                       fontSize: 34,
@@ -69,138 +88,129 @@ class _HomeScreenState extends State<HomeScreen> {
                       letterSpacing: -0.5,
                     ),
                   ),
-
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CardScreen(
+                            products: allProducts,
+                            cardIds: cardIds,
+                          ),
+                        ),
+                      );
+                    },
                     iconSize: 32,
-                    icon: Icon(Icons.shopping_bag_outlined),
+                    icon: const Icon(Icons.shopping_bag_rounded),
+                    color: Colors.blueGrey,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "My Dream Garage",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.blueGrey.shade900,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () async {
+                      // Favori ekranına gider ve oradan dönen güncel listeyi bekler
+                      final List<Data>? updatedList = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              FavoritesScreen(favoriteProducts: favoriteList),
+                        ),
+                      );
+
+                      // Eğer geri dönüldüğünde liste güncellenmişse state'i yeniler
+                      if (updatedList != null) {
+                        setState(() {
+                          favoriteList = updatedList;
+                        });
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.favorite,
+                      color: Color.fromARGB(255, 213, 94, 85),
+                    ),
                   ),
                 ],
               ),
 
-              SizedBox(height: 8),
-
-              Text(
-                "Find your perfect device",
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-
-              SizedBox(height: 14),
-
+              const SizedBox(height: 14),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xfff5f5f5),
+                  color: const Color.fromARGB(255, 243, 217, 217),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: TextField(
                   controller: searchController,
-                  decoration: InputDecoration(
-                    hintText: "Search Products",
-                    hintStyle: TextStyle(color: Colors.grey),
+                  decoration: const InputDecoration(
+                    hintText: "Explore models",
+                    hintStyle: TextStyle(
+                      color: Color.fromARGB(255, 149, 146, 146),
+                    ),
                     border: InputBorder.none,
                     prefixIcon: Icon(Icons.search, color: Colors.grey),
                     contentPadding: EdgeInsets.symmetric(vertical: 14),
                   ),
                 ),
               ),
-
-              SizedBox(height: 12),
-
+              const SizedBox(height: 12),
               Container(
                 width: double.infinity,
-                height: 80.0,
+                height: 85.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      "https://p4.wallpaperbetter.com/wallpaper/488/549/69/technology-internet-business-scheme-wallpaper-preview.jpg",
-                    ),
+                  image: const DecorationImage(
+                    image: AssetImage("images/banner.png"),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-
-              SizedBox(height: 16),
-
+              const SizedBox(height: 16),
               if (isLoading)
-                Center(child: CircularProgressIndicator())
+                const Center(child: CircularProgressIndicator())
               else if (erroMessage != "")
                 Center(child: Text(erroMessage))
               else
                 Expanded(
                   child: GridView.builder(
                     itemCount: allProducts.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.7,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.7,
+                        ),
                     itemBuilder: (context, index) {
                       final product = allProducts[index];
+                      bool isFavorite = favoriteList.contains(product);
 
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: ClipRRect(
-                                borderRadius: BorderRadiusGeometry.vertical(
-                                  top: Radius.circular(12),
-                                ),
-                                child: Image.network(product.image ?? ""),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProductDetailScreen(
+                                product: product,
+                                cardIds: cardIds,
                               ),
                             ),
-
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    product.make ?? "",
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 1),
-
-                                  Text(
-                                    product.model ?? "",
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 12,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 1),
-
-                                  Text(
-                                    "\$${product.price.toString()}" ?? "N/A",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue.shade700,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                          );
+                        },
+                        child: ProductsCard(
+                          product: product,
+                          isFavorite: isFavorite,
+                          onFavoriteTap: () => toggleFavorite(product),
                         ),
                       );
                     },
