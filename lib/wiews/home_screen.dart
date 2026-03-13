@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Data> favoriteList = [];
   ApiService apiService = ApiService();
   final Set<int> cardIds = {};
+  String searchQuery = "";
 
   @override
   void initState() {
@@ -69,6 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredProducts = allProducts.where((product) {
+      final name = product.make ?? "";
+      return name.toUpperCase().contains(searchQuery.toUpperCase());
+    }).toList();
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(219, 69, 97, 148),
       body: SafeArea(
@@ -163,6 +169,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     prefixIcon: Icon(Icons.search, color: Colors.grey),
                     contentPadding: EdgeInsets.symmetric(vertical: 14),
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
                 ),
               ),
               const SizedBox(height: 12),
@@ -185,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
               else
                 Expanded(
                   child: GridView.builder(
-                    itemCount: allProducts.length,
+                    itemCount: filteredProducts.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
@@ -194,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           childAspectRatio: 0.7,
                         ),
                     itemBuilder: (context, index) {
-                      final product = allProducts[index];
+                      final product = filteredProducts[index];
                       bool isFavorite = favoriteList.contains(product);
 
                       return GestureDetector(
