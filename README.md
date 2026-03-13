@@ -8,7 +8,7 @@ Uygulama; şık kart tasarımları, animasyonlu ürün detay geçişleri ve akı
 
 | Ana Ekran | Ürün Detayı | Favoriler | Sepet | Boş Sepet |
 | :---: | :---: | :---: | :---: | :---: |
-| ![Ana Ekran](screenshots/home_screen.png) | ![Ürün Detayı](screenshots/card_detail.png) | ![Favoriler](screenshots/favorites_screen.png) | ![Sepet](screenshots/payment_screen.png) | ![Boş Sepet](screenshots/blank_payment_screen.png) |
+| ![Ana Ekran](screenshots/home_screen.png) | ![Ürün Detayı](screenshots/card_detail.png) | ![Favoriler](screenshots/favorites_screen.png) | ![Sepet](screenshots/payment_screen.png) | ![Boş Sepet](screenshots/blank_payment screen.png) |
 
 ## 🛠 Teknik Bilgiler
 
@@ -27,6 +27,7 @@ flutter pub get
 
 # 3. Uygulamayı çalıştırın
 flutter run
+
 
 
 
