@@ -122,7 +122,6 @@ class _CardScreenState extends State<CardScreen> {
                         itemBuilder: (context, index) {
                           final item = cartProducts[index];
 
-                          // --- YÖNLENDİRME EKLENTİSİ BURADA BAŞLIYOR ---
                           return InkWell(
                             onTap: () {
                               Navigator.push(
@@ -135,7 +134,6 @@ class _CardScreenState extends State<CardScreen> {
                                 ),
                               );
                             },
-                            // --- YÖNLENDİRME EKLENTİSİ BURADA BİTİYOR ---
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Row(
@@ -235,17 +233,19 @@ class _CardScreenState extends State<CardScreen> {
                   ),
                 ),
               const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black38,
-                  minimumSize: const Size.fromHeight(50),
+
+              if (cartProducts.isNotEmpty)
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black38,
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  child: const Text(
+                    "Complete payment",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-                child: const Text(
-                  "Complete payment",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
             ],
           ),
         ),
