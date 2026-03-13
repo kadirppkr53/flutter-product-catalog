@@ -116,7 +116,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         setState(() {
                           final productId = widget.product.id;
                           if (productId != null) {
-                            // widget.cardIds'in mutable (değiştirilebilir) olduğunu varsayıyoruz
                             widget.cardIds.add(productId);
                             print(
                               "Ürün sepete eklendi. Güncel sepet boyutu: ${widget.cardIds.length}",
@@ -132,7 +131,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         );
                       },
-                      // Stil özellikleri tamamen aynı bırakıldı
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black38,
                         minimumSize: const Size.fromHeight(50),

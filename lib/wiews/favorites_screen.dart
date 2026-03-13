@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/components/products_card.dart';
 import 'package:flutter_application_1/models/product_model.dart';
+import 'package:flutter_application_1/wiews/product_detail_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
   final List<Data> favoriteProducts;
+  final Set<int> cardIds;
 
-  const FavoritesScreen({super.key, required this.favoriteProducts});
+  const FavoritesScreen({
+    super.key,
+    required this.favoriteProducts,
+    required this.cardIds,
+  });
 
   @override
   State<FavoritesScreen> createState() => _FavoritesScreenState();
@@ -67,10 +73,24 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final product = localFavorites[index];
-                  return ProductsCard(
-                    product: product,
-                    isFavorite: true, // Bu ekranda hepsi favori
-                    onFavoriteTap: () => toggleFavorite(product),
+                  // Tıklanabilir hale getirmek için GestureDetector ile sardık
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailScreen(
+                            product: product,
+                            cardIds: widget.cardIds,
+                          ),
+                        ),
+                      );
+                    },
+                    child: ProductsCard(
+                      product: product,
+                      isFavorite: true, // Bu ekranda hepsi favori
+                      onFavoriteTap: () => toggleFavorite(product),
+                    ),
                   );
                 },
               ),

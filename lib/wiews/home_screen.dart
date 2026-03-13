@@ -124,8 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       final List<Data>? updatedList = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              FavoritesScreen(favoriteProducts: favoriteList),
+                          builder: (context) => FavoritesScreen(
+                            favoriteProducts: favoriteList,
+                            cardIds: cardIds,
+                          ),
                         ),
                       );
 

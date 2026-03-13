@@ -39,28 +39,117 @@ class _CardScreenState extends State<CardScreen> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: cartProducts.length,
-                  itemBuilder: (context, index) {
-                    final item = cartProducts[index];
-
-                    return Row(
-                      children: [
-                        Container(
-                          width: 70,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                              image: NetworkImage(item.image ?? ""),
-                              fit: BoxFit.cover,
+                child: cartProducts.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.shopping_cart,
+                              size: 64,
+                              color: Colors.blueGrey.shade200,
                             ),
-                          ),
+                            SizedBox(height: 12),
+                            Text(
+                              "Your cards is empty.",
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              "Click the button to start shopping.",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            SizedBox(height: 24),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blueGrey.shade700,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 32,
+                                  vertical: 12,
+                                ),
+                              ),
+                              child: const Text(
+                                "Start shopping",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    );
-                  },
-                ),
+                      )
+                    : ListView.builder(
+                        itemCount: cartProducts.length,
+                        itemBuilder: (context, index) {
+                          final item = cartProducts[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    image: DecorationImage(
+                                      image: NetworkImage(item.image ?? ""),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.make ?? "",
+                                        style: TextStyle(
+                                          fontSize: 23,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        item.model ?? "",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        "\$${item.price.toString()}",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      widget.cardIds.remove(item.id);
+                                    });
+                                  },
+                                  icon: Icon(Icons.restore_from_trash_rounded),
+                                  color: Color(0xFFD3D3D3),
+                                  iconSize: 28,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
